@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html>
+<!-- Using https://github.com/michael-lynch/open-weather to get weather data -->
+
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+    <title>Should We Have Class Outside?</title>
+
+    <body>
+        <center>
+            <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+
+            <h1>Should We Have Class Outside?</h1><br /><br />
+            <div id="form">
+
+
+                <form id="frm1">
+                    Zip Code: <input type="text" id="userinput" onkeypress="return searchKeyPress"><br><br />
+                    <input type="button" onclick="gettingJSON()" value="Submit" id="btn1" />
+
+                    <script>
+                        function searchKeyPress(e) {
+                            // look for window.event in case event isn't passed in
+                            e = e || window.event;
+                            if (e.keyCode == 13) {
+                                document.getElementById('btn1').click();
+                                return false;
+                            }
+                            return true;
+                        }
+                    </script>
+
+                </form>
+
+                <p id="demo">
+
+                </p>
+
+            </div>
+            <script src="/Users/Alex/Documents/ShouldWeHaveClassOutside/js/plugins/openWeather.js"></script>
+
+
+
+            <script>
+                function gettingJSON() {
+                    document.getElementById("demo").innerHTML = "Finding the weather...";
+                    var zip = document.getElementById('userinput').value;
+                    var jsonStr = "http://api.openweathermap.org/data/2.5/weather?zip=" + zip + ",us&APPID=6e080880894f9be24853580062ac920a";
+                    //document.write("jquery loaded");
+                    //  $.getJSON("http://api.openweathermap.org/data/2.5/weather?zip=60093,us&APPID=6e080880894f9be24853580062ac920a",function(json){
+                    $.getJSON(jsonStr, function(json) {
+                        // document.write(JSON.stringify(json));
+                        var total_weather = JSON.stringify(json);
+                        var temp_pos = total_weather.search("temp") + 6;
+                        var final_temp_kelv = total_weather.substring(temp_pos, temp_pos + 6);
+                        var final_temp_far = (9 / 5) * (final_temp_kelv - 273) + 32;
+                        document.getElementById("demo").innerHTML = Math.round(final_temp_far * 100) / 100 + "Â°";
+
+                        if (final_temp_far >= 60) {
+                            document.getElementById("demo").innerHTML = "Yes.";
+                        } else if (final_temp_far < 60) {
+                            document.getElementById("demo").innerHTML = "Too cold.";
+                        } else {
+                            document.getElementById("demo").innerHTML = "Can't find that zip code.";
+                        }
+                    });
+                }
+            </script>
+
+            <script>
+                function getZip() {
+                    var zip = document.getElementById('userinput').value;
+                    document.getElementById("demo").innerHTML = zip;
+                }
+            </script>
+
+
+
+        </center>
+    </body>
+</head>
+
+</html>
